@@ -32,22 +32,28 @@
             {% set collection = page.parent.parent.collection() %}
           {% endif %}
         {% endif %}
-        {% for page in collection %}
+        {% for p in collection %}
 
           <li class="nav-item">
-            {% set current_parent = page.active ? 'disabled' : '' %}
-            <a class="nav-link {{ current_parent }}" href="{{ page.url }}">{{ page.title }}</a>
+            {% set current_parent = p.active ? 'disabled' : '' %}
+            <a class="nav-link {{ current_parent }}" href="{{ p.url }}">{{ p.title }}</a>
           </li>
 
           {% if page.children %}
-            <ul class="nav flex-column ml-3">
-            {% for child in page.children %}
-              {% set current_parent = child.active ? 'disabled' : '' %}
-              <li class="nav-item">
-                <a class="nav-link {{ current_parent }}" href="{{ child.url }}">{{ child.title }}</a>
-              </li>
-            {% endfor %}
-            </ul>
+
+            {{ dump (p.slug) }}
+            {{ dump (page.parent.slug) }}
+            {% if p.active or (p.slug == page.parent.slug) %}
+              <ul class="nav flex-column ml-3">
+              {% for child in p.children %}
+                {% set current_child = child.active ? 'disabled' : '' %}
+                <li class="nav-item">
+                  <a class="nav-link {{ current_child }}" href="{{ child.url }}">{{ child.title }}</a>
+                </li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+
           {% endif %}
 
         {% endfor %}
@@ -55,9 +61,9 @@
         </div>
 
         {% if show_sidebar and not (grav.uri.param('chromeless') or grav.uri.param('embedded') or theme_var('chromeless.enabled')) %}
-          <div class="col-md-5 blog-main">
+          <div class="col-md-5 blog-main order-third">
         {% else %}
-          <div class="col-md-9 blog-main">
+          <div class="col-md-9 blog-main order-first order-md-2">
         {% endif %}
 
         {% if not (page.header.hide_page_title) and not (grav.uri.param('hidepagetitle')) %}
@@ -76,32 +82,34 @@
 
         <p>
 
-              {% if not siblings.isFirst(page.path) %}
-                  {% if page.children.count == 0 %}
-                    3<a class="btn btn-primary" href="{{ siblings.nextSibling(page.path).url }}"><i class="fa fa-chevron-left"></i> {{ siblings.nextSibling(page.path).title }}</a>
-                  {% else %}
-                    3b<a class="btn btn-primary" href="{{ siblings.nextSibling(page.path).url }}"><i class="fa fa-chevron-left"></i> {{ siblings.nextSibling(page.path).title }}</a>
-                  {% endif %}
-              {% else %}
-                  {% if not (page.parent.parent.slug == 'pages') %}
-                    3a<a class="btn btn-primary" href="{{ page.parent.url }}"><i class="fa fa-chevron-left"></i> {{ page.parent.title }}</a>
-                  {% endif %}
-              {% endif %}
-
-              {% if not siblings.isLast(page.path) %}
-                {{ dump (page.children.count) }}
+            {% if not siblings.isFirst(page.path) %}
                 {% if page.children.count == 0 %}
-                  4<a class="btn btn-primary" href="{{ siblings.prevSibling(page.path).url }}">{{ siblings.prevSibling(page.path).title }} <i class="fa fa-chevron-right"></i></a>
+                  <a class="btn btn-primary" href="{{ siblings.nextSibling(page.path).url }}"><i class="fa fa-chevron-left"></i> {{ siblings.nextSibling(page.path).title }}</a>
                 {% else %}
-                  4b<a class="btn btn-primary" href="{{ page.children|first.url }}">{{ page.children|first.title }} <i class="fa fa-chevron-right"></i></a>
+                  <a class="btn btn-primary" href="{{ siblings.nextSibling(page.path).url }}"><i class="fa fa-chevron-left"></i> {{ siblings.nextSibling(page.path).title }}</a>
                 {% endif %}
+            {% else %}
+                {% if not (page.parent.parent.slug == 'pages') %}
+                  <a class="btn btn-primary" href="{{ page.parent.url }}"><i class="fa fa-chevron-left"></i> {{ page.parent.title }}</a>
+                {% endif %}
+            {% endif %}
+
+            {% if not siblings.isLast(page.path) %}
+              {% if page.children.count == 0 %}
+                <a class="btn btn-primary" href="{{ siblings.prevSibling(page.path).url }}">{{ siblings.prevSibling(page.path).title }} <i class="fa fa-chevron-right"></i></a>
               {% else %}
-                  {{ dump (page.parent.path) }}
-				 {% set siblings = page.parent.parent.children() %}
-                  {{ dump (siblings.nextSibling(page.parent.path).title) }}
-                  {{ dump (siblings.prevSibling(page.parent.path).title) }}
-                  4a<a class="btn btn-primary" href="{{ siblings.prevSibling(page.parent.path).url }}">{{ siblings.prevSibling(page.parent.path).title }} <i class="fa fa-chevron-right"></i></a>
+                <a class="btn btn-primary" href="{{ page.children|first.url }}">{{ page.children|first.title }} <i class="fa fa-chevron-right"></i></a>
               {% endif %}
+            {% else %}
+			          {% if not (page.parent.parent.slug == 'pages') %}
+                  {% set siblings = page.parent.parent.children() %}
+                  {% if not siblings.isLast(page.parent.path) %}
+                    <a class="btn btn-primary" href="{{ siblings.prevSibling(page.parent.path).url }}">{{ siblings.prevSibling(page.parent.path).title }} <i class="fa fa-chevron-right"></i></a>
+                  {% endif %}
+                {% else %}
+                  <a class="btn btn-primary" href="{{ page.children|first.url }}">{{ page.children|first.title }} <i class="fa fa-chevron-right"></i></a>
+              {% endif %}
+            {% endif %}
 
           </p>
 
