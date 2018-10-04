@@ -70,6 +70,19 @@
 
           <p class="prev-next">
               {% set collection = page.parent.children() %}
+
+
+	{% set current = page.parent().children() %}
+	{{ dump (current) }}
+	{{ dump (current.nextSibling(page.path).title) }}
+	{{ dump (current.prevSibling(page.path).title) }}
+
+    {% if current.nextSibling(page.path).title is not empty %}
+      {{ nav_button(current.nextSibling(page.path).title, './' ~ current.nextSibling(page.path).slug, 4, 'primary') }}
+    {% endif %}
+
+
+
               {% if not collection.isFirst(page.path) %}
                   <a class="btn btn-primary" href="{{ collection.nextSibling(page.path).url }}"><i class="fa fa-chevron-left"></i> {{ collection.nextSibling(page.path).title }}</a>
               {% endif %}
