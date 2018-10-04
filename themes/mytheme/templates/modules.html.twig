@@ -97,6 +97,7 @@
                 {% endif %}
               {% else %}
                   {{ dump (page.parent.path) }}
+				 {% set siblings = page.parent.parent.children() %}
                   {{ dump (siblings.nextSibling(page.parent.path).title) }}
                   {{ dump (siblings.prevSibling(page.parent.path).title) }}
                   4a<a class="btn btn-primary" href="{{ siblings.prevSibling(page.parent.path).url }}">{{ siblings.prevSibling(page.parent.path).title }} <i class="fa fa-chevron-right"></i></a>
