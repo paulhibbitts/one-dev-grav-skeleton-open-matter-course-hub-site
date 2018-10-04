@@ -59,7 +59,7 @@
         </div>
 
         {% if show_sidebar and not (grav.uri.param('chromeless') or grav.uri.param('embedded') or theme_var('chromeless.enabled')) %}
-          <div class="col-md-5 blog-main order-third">
+          <div class="col-md-5 blog-main order-first order-md-2">
         {% else %}
           <div class="col-md-9 blog-main order-first order-md-2">
         {% endif %}
@@ -117,7 +117,7 @@
 
       {# check content display flag - hibbittsdesign.org #}
       {% if show_sidebar and not (grav.uri.param('chromeless') or grav.uri.param('embedded') or theme_var('chromeless.enabled')) %}
-        <div class="col-md-4 blog-sidebar">
+        <div class="col-md-4 blog-sidebar order-last">
           {% include 'partials/sidebar.html.twig' with {'blog':page} %}
         </div>
       {% endif %}
