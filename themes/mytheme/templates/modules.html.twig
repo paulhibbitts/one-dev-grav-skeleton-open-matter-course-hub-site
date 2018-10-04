@@ -41,8 +41,6 @@
 
           {% if page.children %}
 
-            {{ dump (p.slug) }}
-            {{ dump (page.parent.slug) }}
             {% if p.active or (p.slug == page.parent.slug) %}
               <ul class="nav flex-column ml-3">
               {% for child in p.children %}
