@@ -1,5 +1,5 @@
 ---
-title: 'Module One'
+title: '1. Module One'
 ---
 
 PAGE CONTENT
