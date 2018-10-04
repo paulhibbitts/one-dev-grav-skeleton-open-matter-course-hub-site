@@ -1,0 +1,97 @@
+{% embed 'partials/base.html.twig' %}
+
+{% if page.header.show_sidebar is defined %}
+  {% set show_sidebar = page.header.show_sidebar %}
+{% else %}
+  {% if page.parent.header.show_sidebar is defined %}
+    {% set show_sidebar = page.parent.header.show_sidebar %}
+  {% else %}
+    {% if page.parent.parent.header.show_sidebar is defined %}
+      {% set show_sidebar = page.parent.parent.header.show_sidebar %}
+    {% else %}
+      {% set show_sidebar = true %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{% block content %}
+
+  <div class="main-content">
+    <div class="container">
+      <div class="row">
+        {# check content display flag - hibbittsdesign.org #}
+        <div class="col-md-3 blog-sidebar">
+
+
+        <ul class="nav flex-column">
+
+        {% set collection = page.collection() %}
+        {% if collection is empty %}
+          {% set collection = page.parent.collection() %}
+          {% if collection is empty %}
+            {% set collection = page.parent.parent.collection() %}
+          {% endif %}
+        {% endif %}
+        {% for page in collection %}
+
+          <li class="nav-item">
+            {% set current_parent = page.active ? 'disabled' : '' %}
+            <a class="nav-link {{ current_parent }}" href="{{ page.url }}">{{ page.title }}</a>
+          </li>
+
+          {% if page.children %}
+            <ul class="nav flex-column ml-3">
+            {% for child in page.children %}
+              {% set current_parent = child.active ? 'disabled' : '' %}
+              <li class="nav-item">
+                <a class="nav-link {{ current_parent }}" href="{{ child.url }}">{{ child.title }}</a>
+              </li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+
+        {% endfor %}
+        </ul>
+        </div>
+
+        {% if show_sidebar and not (grav.uri.param('chromeless') or grav.uri.param('embedded') or theme_var('chromeless.enabled')) %}
+          <div class="col-md-5 blog-main">
+        {% else %}
+          <div class="col-md-9 blog-main">
+        {% endif %}
+
+        {% if not (page.header.hide_page_title) and not (grav.uri.param('hidepagetitle')) %}
+          <h3>{{page.title}}</h3>
+        {% else %}
+          <h3 aria-label={{page.title}}></h3>
+        {% endif %}
+
+        {{ page.content }}
+
+          <p class="prev-next">
+              {% set collection = page.parent.children() %}
+              {% if not collection.isFirst(page.path) %}
+                  <a class="btn btn-primary" href="{{ collection.nextSibling(page.path).url }}"><i class="fa fa-chevron-left"></i> {{ collection.nextSibling(page.path).title }}</a>
+              {% endif %}
+
+              {% if not collection.isLast(page.path) %}
+                  <a class="btn btn-primary" href="{{ collection.prevSibling(page.path).url }}">{{ collection.prevSibling(page.path).title }} <i class="fa fa-chevron-right"></i></a>
+              {% endif %}
+          </p>
+
+    </div>
+
+      {# check content display flag - hibbittsdesign.org #}
+      {% if show_sidebar and not (grav.uri.param('chromeless') or grav.uri.param('embedded') or theme_var('chromeless.enabled')) %}
+        <div class="col-md-4 blog-sidebar">
+          {% include 'partials/sidebar.html.twig' with {'blog':page} %}
+        </div>
+      {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+
+{% endembed %}
