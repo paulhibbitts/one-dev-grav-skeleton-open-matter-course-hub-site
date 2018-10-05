@@ -11,8 +11,3 @@ Put your custom CSS in this file.
     color: #FFFFFF !important;
 }
 */
-
-.blog-sidebar .nav-link {
-    display: block;
-    padding: .5rem 0rem !important;
-}
